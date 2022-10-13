@@ -24,6 +24,10 @@ provider "random" {
 
 # Random ID used as a user
 resource "random_id" "identification" {
+  keepers = {
+    # Generate a new id each time we switch the name
+    name = var.name
+  }
   byte_length = 8
 }
 
@@ -33,7 +37,7 @@ variable "name" {
 }
 
 resource "local_file" "foo" {
-    content  = "Hello ${var.name} identified by ${random_id.identification.id}!!"
+    content  = "Hello ${random_id.identification.keepers.name} identified by ${random_id.identification.id}!!"
     filename = "/tmp/index.html"
 }
 
